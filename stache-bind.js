@@ -17,7 +17,11 @@ function fragment(html) {
 
 function resolve(obj, prop) {
   if (typeof obj !== 'undefined') {
-    return obj[prop];
+    const value = obj[prop];
+    if (typeof value === 'function') {
+      return value.call();
+    }
+    return value;
   }
 }
 

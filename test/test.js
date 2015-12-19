@@ -19,6 +19,12 @@ describe('mustache data binding', function() {
       assert.equal('Hubot', fragment.textContent);
     });
 
+    it('replaces a property with a function result', function() {
+      const simple = template('simple');
+      const fragment = simple({name: () => 'Hubot'});
+      assert.equal('Hubot', fragment.textContent);
+    });
+
     it('replaces missing property with empty string', function() {
       const simple = template('simple');
       const fragment = simple({});

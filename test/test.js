@@ -64,4 +64,54 @@ describe('mustache data binding', function() {
       assert(window.Mustaches['user']);
     });
   });
+
+  describe('data binding', function() {
+    before(function() {
+      document.body.innerHTML = `
+        <template data-name="simple">
+          <p class="{{ login }}">{{ name }}</p>
+        </template>
+        <template data-name="chains">
+          <p>{{ user.avatar.url }}</p>
+        </template>`;
+    });
+
+    it('updates the text nodes on model changes', function() {
+      const user = {name: 'Hubot'};
+      const simple = template('simple');
+      const fragment = simple(user);
+      assert.equal('Hubot', fragment.textContent.trim());
+
+      user.name = 'Bender';
+
+      assert.equal('Bender', fragment.textContent.trim());
+    });
+
+    it('updates attributes on model changes', function() {
+      const user = {name: 'Hubot', login: 'hubot'};
+      const simple = template('simple');
+      const fragment = simple(user);
+      const classes = fragment.firstElementChild.classList;
+      assert(classes.contains('hubot'));
+
+      user.login = 'bender';
+
+      assert(classes.contains('bender'));
+      assert(!classes.contains('hubot'));
+    });
+
+    it('observes deep hierarchy changes', function() {
+      const context = {user: {avatar: {url: '/hubot.png'}}};
+      const chains = template('chains');
+      const fragment = chains(context);
+
+      assert.equal('/hubot.png', fragment.textContent.trim());
+
+      context.user.avatar = {url: '/bender.png'};
+      assert.equal('/bender.png', fragment.textContent.trim());
+
+      context.user = {avatar: {url: '/bb-8.png'}};
+      assert.equal('/bb-8.png', fragment.textContent.trim());
+    });
+  });
 });

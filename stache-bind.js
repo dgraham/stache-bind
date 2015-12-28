@@ -20,7 +20,7 @@ function replace(key) {
   return escape(value);
 }
 
-function nodes(selectors, root = document) {
+function queryAll(selectors, root = document) {
   return Array.from(root.querySelectorAll(selectors));
 }
 
@@ -160,7 +160,7 @@ export function template(name) {
 
 export function install(global = 'Templates') {
   const registry = {};
-  const templates = nodes('template[data-name]');
+  const templates = queryAll('template[data-name]');
   const names = templates.map(el => el.getAttribute('data-name'));
   for (const name of names) registry[name] = template(name);
   window[global] = registry;

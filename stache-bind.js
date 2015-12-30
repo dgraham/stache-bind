@@ -49,12 +49,19 @@ function notifyTree(node) {
 function appendChild(parent, name) {
   const child = parent.children[name];
   return child ? child : parent.children[name] = {
-    children: {}, observers: []
+    name: name, children: {}, observers: []
   };
 }
 
-function descend(node, key) {
-  return key.split('.').reduce(appendChild, node);
+function compose(a, b) {
+  return function composed() {
+    return a(b.apply(this, arguments));
+  };
+}
+
+function descend(node, key, visitor) {
+  const fn = compose(visitor, appendChild);
+  return key.split('.').reduce(fn, node);
 }
 
 function bind(node, context) {
@@ -62,21 +69,23 @@ function bind(node, context) {
   const root = {children: {}, observers: []};
   for (const {target, key, update} of bindings(node)) {
     const observer = update.bind(target, context, key);
-    const leaf = descend(root, key);
+    const leaf = descend(root, key, visitor(context));
     leaf.observers.push(observer);
     update.call(target, context, key);
   }
-
-  // Proxy assignment to invalidate observer tree.
-  function proxyNode(node, context) {
-    for (const name in node.children) {
-      const child = node.children[name];
-      proxy(context, name, notifyTree.bind(null, child));
-      proxyNode(child, context[name]);
-    }
-  }
-  proxyNode(root, context);
   return node;
+}
+
+function visitor(context) {
+  let current = context;
+  return function visit(node) {
+    if (!node.proxied) {
+      proxy(current, node.name, notifyTree.bind(null, node));
+      node.proxied = true;
+    }
+    current = current[node.name];
+    return node;
+  };
 }
 
 function proxy(target, property, after) {

@@ -113,5 +113,20 @@ describe('mustache data binding', function() {
       context.user = {avatar: {url: '/bb-8.png'}};
       assert.equal('/bb-8.png', fragment.textContent.trim());
     });
+
+    it('observes a single model with multiple views', function() {
+      const user = {name: 'Hubot'};
+      const simple = template('simple');
+      const fragment1 = simple(user);
+      const fragment2 = simple(user);
+
+      assert.equal('Hubot', fragment1.textContent.trim());
+      assert.equal('Hubot', fragment2.textContent.trim());
+
+      user.name = 'Bender';
+
+      assert.equal('Bender', fragment1.textContent.trim());
+      assert.equal('Bender', fragment2.textContent.trim());
+    });
   });
 });

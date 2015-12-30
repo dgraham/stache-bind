@@ -1,3 +1,6 @@
+// Maps context object to observer tree.
+const trees = new WeakMap();
+
 function escape(text) {
   const node = document.createElement('p');
   node.textContent = text;
@@ -64,8 +67,18 @@ function descend(node, key, visitor) {
   return key.split('.').reduce(fn, node);
 }
 
+// Finds or builds the observer tree for a context object.
+function tree(context) {
+  let root = trees.get(context);
+  if (!root) {
+    root = {children: {}, observers: []};
+    trees.set(context, root);
+  }
+  return root;
+}
+
 function bind(fragment, context) {
-  const root = {children: {}, observers: []};
+  const root = tree(context);
   for (const {target, key, update} of bindings(fragment)) {
     const observer = update.bind(target, context, key);
     const leaf = descend(root, key, visitor(context));

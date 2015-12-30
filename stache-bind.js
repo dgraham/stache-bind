@@ -64,16 +64,15 @@ function descend(node, key, visitor) {
   return key.split('.').reduce(fn, node);
 }
 
-function bind(node, context) {
-  // Build observer tree.
+function bind(fragment, context) {
   const root = {children: {}, observers: []};
-  for (const {target, key, update} of bindings(node)) {
+  for (const {target, key, update} of bindings(fragment)) {
     const observer = update.bind(target, context, key);
     const leaf = descend(root, key, visitor(context));
     leaf.observers.push(observer);
     update.call(target, context, key);
   }
-  return node;
+  return fragment;
 }
 
 function visitor(context) {

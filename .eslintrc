@@ -20,7 +20,6 @@
     "no-trailing-spaces": 2,
     "no-var": 2,
     "prefer-const": 2,
-"no-console": 0,
     "semi": 2,
     "semi-spacing": 2,
     "space-after-keywords": 2,

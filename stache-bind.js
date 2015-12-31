@@ -81,14 +81,17 @@ function bind(fragment, context) {
   const root = tree(context);
   for (const {target, key, update} of bindings(fragment)) {
     const observer = update.bind(target, context, key);
-    const leaf = descend(root, key, visitor(context));
+    const leaf = descend(root, key, proxyOnce(context));
     leaf.observers.push(observer);
     update.call(target, context, key);
   }
   return fragment;
 }
 
-function visitor(context) {
+// Returns a visitor function to descend through a context object's
+// attributes, proxying assignment operators to notify the observer
+// tree of changes.
+function proxyOnce(context) {
   let current = context;
   return function visit(node) {
     if (!node.proxied) {

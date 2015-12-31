@@ -17,9 +17,9 @@ function resolve(obj, prop) {
   }
 }
 
-function replace(key) {
+function pluck(context, key) {
   const properties = key.split('.');
-  const value = properties.reduce(resolve, this) || '';
+  const value = properties.reduce(resolve, context) || '';
   return escape(value);
 }
 
@@ -115,13 +115,11 @@ function proxy(target, property, after) {
 }
 
 function updateText(context, key) {
-  const value = replace.call(context, key);
-  this.textContent = value;
+  this.textContent = pluck(context, key);
 }
 
 function updateAttribute(context, key) {
-  const value = replace.call(context, key);
-  this.value = value;
+  this.value = pluck(context, key);
 }
 
 function parse(text) {

@@ -25,5 +25,8 @@
     "jsdom": "^7.2.1",
     "mocha": "^2.3.4",
     "mocha-jsdom": "^1.0.0"
-  }
+  },
+  "files": [
+    "stache-bind.js"
+  ]
 }

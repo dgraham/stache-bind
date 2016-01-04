@@ -1,6 +1,6 @@
 {
   "name": "stache-bind",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Minimum viable mustache data binding.",
   "scripts": {
     "pretest": "eslint stache-bind.js test/",

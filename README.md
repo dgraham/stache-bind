@@ -8,7 +8,8 @@ Simple [data binding][binding] with [Mustache][mustache] templates.
 ## Motivation
 
 Web applications frequently need to reflect changes to model data in the
-view presented to the user. This is commonly done with many calls to `document.querySelector`, followed by attribute assignments.
+view presented to the user. This is commonly done with many calls to
+`document.querySelector`, followed by attribute assignments.
 
 ```js
 // Model data.
@@ -115,6 +116,7 @@ the `{{#}} {{/}}` iterator section syntax.
 
 [proxy]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 [proxy-support]: http://caniuse.com/#feat=proxy
+
 ## Development
 
 ```

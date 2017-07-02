@@ -4,7 +4,13 @@ const assert = require('assert');
 const jsdom = require('jsdom-global');
 
 describe('mustache data binding', function() {
-  jsdom();
+  before(function() {
+    this.cleanup = jsdom();
+  });
+
+  after(function() {
+    this.cleanup();
+  });
 
   describe('template', function() {
     before(function() {

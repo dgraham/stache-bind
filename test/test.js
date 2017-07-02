@@ -1,7 +1,7 @@
 import {install, template} from '../stache-bind';
 
 const assert = require('assert');
-const jsdom = require('mocha-jsdom');
+const jsdom = require('jsdom-global');
 
 describe('mustache data binding', function() {
   jsdom();

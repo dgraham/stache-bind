@@ -31,13 +31,13 @@ function bindings(node) {
   const results = [];
   for (const child of node.childNodes) {
     switch (child.nodeType) {
-    case 1:
-      results.push(...bindAttributes(child));
-      results.push(...bindings(child));
-      break;
-    case 3:
-      results.push(...bindText(child));
-      break;
+      case 1:
+        results.push(...bindAttributes(child));
+        results.push(...bindings(child));
+        break;
+      case 3:
+        results.push(...bindText(child));
+        break;
     }
   }
   return results;
@@ -45,8 +45,9 @@ function bindings(node) {
 
 function notifyTree(node) {
   for (const fn of node.observers) fn();
-  for (const name in node.children)
+  for (const name in node.children) {
     notifyTree(node.children[name]);
+  }
 }
 
 function appendChild(parent, name) {
@@ -109,7 +110,7 @@ function proxy(target, property, after) {
   let current = target[property];
   Object.defineProperty(target, property, {
     get: () => current,
-    set: (value) => {
+    set: value => {
       current = value;
       after();
     }

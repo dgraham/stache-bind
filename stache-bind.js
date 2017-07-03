@@ -123,14 +123,12 @@ function updateAttribute(context, key) {
 }
 
 function parse(text) {
-  const tokens = [];
-  for (const token of text.split(/({{.+?}})/)) {
+  return text.split(/({{.+?}})/).map(token => {
     const stache = token.startsWith('{{') && token.endsWith('}}');
-    tokens.push(stache
+    return stache
       ? {type: 1, value: token.slice(2, -2).trim()}
-      : {type: 0, value: token});
-  }
-  return tokens;
+      : {type: 0, value: token};
+  });
 }
 
 function bindAttributes(node) {

@@ -50,10 +50,12 @@ function notifyTree(node) {
 }
 
 function appendChild(parent, name) {
-  const child = parent.children[name];
-  return child ? child : parent.children[name] = {
-    name: name, children: {}, observers: []
-  };
+  let child = parent.children[name];
+  if (!child) {
+    child = {name: name, children: {}, observers: []};
+    parent.children[name] = child;
+  }
+  return child;
 }
 
 function compose(a, b) {

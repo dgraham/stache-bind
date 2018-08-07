@@ -92,6 +92,9 @@ describe('mustache data binding', function() {
         </template>
         <template data-name="chains">
           <p>{{ user.avatar.url }}</p>
+        </template>
+        <template data-name="attributes">
+          <p class="white-text {{ type }} {{ color }}">{{ name }}</p>
         </template>`;
     });
 
@@ -117,6 +120,22 @@ describe('mustache data binding', function() {
 
       assert(classes.contains('bender'));
       assert(!classes.contains('hubot'));
+    });
+
+    it('updates a single attribute with multiple values', function() {
+      const user = {name: 'Hubot', color: 'red', type: 'primary'};
+      const multiAttributes = template('attributes');
+      const fragment = multiAttributes(user);
+      const classes = fragment.firstElementChild.classList;
+
+      assert(classes.contains('red'));
+      assert(classes.contains('primary'));
+
+      user.color = 'blue';
+      user.type = 'secondary';
+
+      assert(classes.contains('blue'));
+      assert(classes.contains('secondary'));
     });
 
     it('observes deep hierarchy changes', function() {

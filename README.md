@@ -128,9 +128,9 @@ npm test
 
 A sample of full-fledged JavaScript data binding frameworks.
 
-- [Ember](http://emberjs.com)
-- [React](http://facebook.github.io/react/)
-- [Rivets](http://rivetsjs.com)
+- [Ember](https://emberjs.com)
+- [React](https://reactjs.org)
+- [Vue](https://vuejs.org)
 
 ## License
 

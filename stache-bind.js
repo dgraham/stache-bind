@@ -85,11 +85,11 @@ function tree(context) {
 
 function bind(fragment, context) {
   const root = tree(context);
-  for (const {target, key, update} of bindings(fragment)) {
-    const observer = update.bind(target, context, key);
+  for (const {target, key, update, original} of bindings(fragment)) {
+    const observer = update.bind(target, context, key, original);
     const leaf = descend(root, key, proxyOnce(context));
     leaf.observers.push(observer);
-    update.call(target, context, key);
+    update.call(target, context, key, original);
   }
   return fragment;
 }
@@ -124,8 +124,14 @@ function updateText(context, key) {
   this.textContent = pluck(context, key);
 }
 
-function updateAttribute(context, key) {
-  this.value = pluck(context, key);
+function updateAttribute(context, key, original) {
+  let str = original;
+  for (const token of parse(original)) {
+    if (token.type === 1) {
+      const reg = new RegExp('{{\\s*' + token.value + '\\s*}}');
+      this.value = str = str.replace(reg, pluck(context, token.value));
+    }
+  }
 }
 
 function parse(text) {
@@ -145,6 +151,7 @@ function bindAttributes(node) {
         bindings.push({
           target: attr,
           key: token.value,
+          original: attr.value,
           update: updateAttribute
         });
       }
@@ -167,6 +174,7 @@ function bindText(node) {
       bindings.push({
         target: text,
         key: token.value,
+        original: null,
         update: updateText
       });
     }

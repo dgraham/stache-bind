@@ -16,7 +16,8 @@ describe('mustache data binding', function() {
     before(function() {
       document.body.innerHTML = `
         <template data-name="simple"><p>{{ name }}</p></template>
-        <template data-name="chains"><p>{{ user.id }}</p></template>`;
+        <template data-name="chains"><p>{{ user.id }}</p></template>
+        <template data-name="attributes"><p class="white-text {{ type }} {{ color }}">{{ name }}</p></template>`;
     });
 
     it('replaces a property with its value', function() {
@@ -41,6 +42,18 @@ describe('mustache data binding', function() {
       const chains = template('chains');
       const fragment = chains({user: {id: 42}});
       assert.equal('42', fragment.textContent);
+    });
+
+    it('replaces multiple properties in an attribute with its values', function() {
+      const user = {name: 'Hubot', color: 'red', type: 'primary'};
+      const multiAttributes = template('attributes');
+      const fragment = multiAttributes(user);
+      const classes = fragment.firstElementChild.classList;
+
+      assert(classes.contains('red'));
+      assert(classes.contains('primary'));
+      assert(classes.contains('white-text'));
+      assert.equal('Hubot', fragment.textContent);
     });
   });
 
@@ -79,6 +92,9 @@ describe('mustache data binding', function() {
         </template>
         <template data-name="chains">
           <p>{{ user.avatar.url }}</p>
+        </template>
+        <template data-name="attributes">
+          <p class="white-text {{ type }} {{ color }}">{{ name }}</p>
         </template>`;
     });
 
@@ -104,6 +120,22 @@ describe('mustache data binding', function() {
 
       assert(classes.contains('bender'));
       assert(!classes.contains('hubot'));
+    });
+
+    it('updates a single attribute with multiple values', function() {
+      const user = {name: 'Hubot', color: 'red', type: 'primary'};
+      const multiAttributes = template('attributes');
+      const fragment = multiAttributes(user);
+      const classes = fragment.firstElementChild.classList;
+
+      assert(classes.contains('red'));
+      assert(classes.contains('primary'));
+
+      user.color = 'blue';
+      user.type = 'secondary';
+
+      assert(classes.contains('blue'));
+      assert(classes.contains('secondary'));
     });
 
     it('observes deep hierarchy changes', function() {

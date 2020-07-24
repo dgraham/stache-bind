@@ -66,10 +66,7 @@ function compose(a, b) {
 }
 
 function descend(node, key, visitor) {
-  const fn = compose(
-    visitor,
-    appendChild
-  );
+  const fn = compose(visitor, appendChild);
   return key.split('.').reduce(fn, node);
 }
 

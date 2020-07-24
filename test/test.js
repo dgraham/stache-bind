@@ -1,69 +1,59 @@
-import {install, template} from '../stache-bind';
+import {install, template} from '../stache-bind.js';
+import assert from 'assert';
 
-const assert = require('assert');
-const jsdom = require('jsdom-global');
-
-describe('mustache data binding', function() {
-  before(function() {
-    this.cleanup = jsdom();
-  });
-
-  after(function() {
-    this.cleanup();
-  });
-
-  describe('template', function() {
-    before(function() {
+describe('mustache data binding', function () {
+  describe('template', function () {
+    before(function () {
       document.body.innerHTML = `
         <template data-name="simple"><p>{{ name }}</p></template>
         <template data-name="chains"><p>{{ user.id }}</p></template>`;
     });
 
-    it('replaces a property with its value', function() {
+    it('replaces a property with its value', function () {
       const simple = template('simple');
       const fragment = simple({name: 'Hubot'});
       assert.equal('Hubot', fragment.textContent);
     });
 
-    it('replaces a property with a function result', function() {
+    it('replaces a property with a function result', function () {
       const simple = template('simple');
       const fragment = simple({name: () => 'Hubot'});
       assert.equal('Hubot', fragment.textContent);
     });
 
-    it('replaces missing property with empty string', function() {
+    it('replaces missing property with empty string', function () {
       const simple = template('simple');
       const fragment = simple({});
       assert.equal('', fragment.textContent);
     });
 
-    it('resolves property lookup chains', function() {
+    it('resolves property lookup chains', function () {
       const chains = template('chains');
       const fragment = chains({user: {id: 42}});
       assert.equal('42', fragment.textContent);
     });
   });
 
-  describe('install', function() {
-    before(function() {
+  describe('install', function () {
+    before(function () {
       document.body.innerHTML = `
         <template data-name="avatar"></template>
         <template data-name="user"></template>`;
     });
 
-    afterEach(function() {
+    afterEach(function () {
       delete window.Templates;
       delete window.Mustaches;
     });
 
-    it('installs to Templates window global', function() {
+    it('installs to Templates window global', function () {
       install();
       assert(window.Templates);
       assert(window.Templates['avatar']);
       assert(window.Templates['user']);
     });
 
-    it('installs to custom window global', function() {
+    it('installs to custom window global', function () {
       install('Mustaches');
       assert.equal(undefined, window.Templates);
       assert(window.Mustaches['avatar']);
@@ -71,8 +61,8 @@ describe('mustache data binding', function() {
     });
   });
 
-  describe('data binding', function() {
-    before(function() {
+  describe('data binding', function () {
+    before(function () {
       document.body.innerHTML = `
         <template data-name="simple">
           <p class="{{ login }}">{{ name }}</p>
@@ -82,7 +72,7 @@ describe('mustache data binding', function() {
         </template>`;
     });
 
-    it('updates the text nodes on model changes', function() {
+    it('updates the text nodes on model changes', function () {
       const user = {name: 'Hubot'};
       const simple = template('simple');
       const fragment = simple(user);
@@ -93,7 +83,7 @@ describe('mustache data binding', function() {
       assert.equal('Bender', fragment.textContent.trim());
     });
 
-    it('updates attributes on model changes', function() {
+    it('updates attributes on model changes', function () {
       const user = {name: 'Hubot', login: 'hubot'};
       const simple = template('simple');
       const fragment = simple(user);
@@ -106,7 +96,7 @@ describe('mustache data binding', function() {
       assert(!classes.contains('hubot'));
     });
 
-    it('observes deep hierarchy changes', function() {
+    it('observes deep hierarchy changes', function () {
       const context = {user: {avatar: {url: '/hubot.png'}}};
       const chains = template('chains');
       const fragment = chains(context);
@@ -120,7 +110,7 @@ describe('mustache data binding', function() {
       assert.equal('/bb-8.png', fragment.textContent.trim());
     });
 
-    it('observes a single model with multiple views', function() {
+    it('observes a single model with multiple views', function () {
       const user = {name: 'Hubot'};
       const simple = template('simple');
       const fragment1 = simple(user);
